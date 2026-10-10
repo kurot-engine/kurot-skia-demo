@@ -1,11 +1,19 @@
 import { Bitmap, DisplayObjectContainer, Rectangle, Shape, Sprite, TouchEvent } from '@kurot/core';
-import type { Stage, Texture } from '@kurot/core';
-import type { SkImage } from 'react-native-skia';
+import type { Resource, Stage, Texture } from '@kurot/core';
 
 import type { NativeScene } from '../skia/KurotView';
-import { createSkiaTexture } from '../skia/textures';
+import { TextShowcase } from './TextShowcase';
 
 const colors = [0x67e3bb, 0x72adff, 0xffd58a, 0xf6a4cc];
+const icons = ['checkbox_selected', 'radio_selected', 'slider_thumb', 'close_up'];
+
+function getTexture(resources: Resource, name: string): Texture {
+    const texture = resources.get<Texture>(name);
+    if (!texture) {
+        throw new Error(`Scene texture has not loaded: ${name}`);
+    }
+    return texture;
+}
 
 interface Particle {
     shape: Shape;
@@ -24,14 +32,13 @@ export class Playground implements NativeScene {
     private readonly orbit = new DisplayObjectContainer();
     private readonly particles: Particle[] = [];
     private readonly held = new Set<number>();
-    private readonly texture: Texture;
+    private readonly text: TextShowcase;
     private taps = 0;
     private drags = 0;
     private time = 0;
 
-    public constructor(private readonly stage: Stage, image: SkImage,
+    public constructor(private readonly stage: Stage, resources: Resource,
         private readonly onInteraction: (stats: InteractionStats) => void) {
-        this.texture = createSkiaTexture(image, 2);
         const background = new Shape();
         for (let y = 24; y < 500; y += 28) {
             for (let x = 26; x < 360; x += 28) {
@@ -50,13 +57,10 @@ export class Playground implements NativeScene {
         clipped.graphics.drawRoundRect(18, 0, 304, 56, 20);
         clipped.graphics.endFill();
         for (let i = 0; i < 11; i++) {
-            const tile = new Shape();
+            const tile = new Bitmap(getTexture(resources, `kui.${icons[i % icons.length]}`));
             tile.x = i * 36;
-            tile.y = 17;
-            tile.rotation = 15;
-            tile.graphics.beginFill(colors[i % colors.length], 0.8);
-            tile.graphics.drawRoundRect(0, 0, 23, 23, 8);
-            tile.graphics.endFill();
+            tile.y = 14;
+            tile.width = tile.height = 28;
             clipped.addChild(tile);
         }
         stage.addChild(clipped);
@@ -68,12 +72,11 @@ export class Playground implements NativeScene {
         this.orbit.x = 180;
         this.orbit.y = 205;
         for (let i = 0; i < 4; i++) {
-            const satellite = new Shape();
+            const satellite = new Bitmap(getTexture(resources, `kui.${icons[i]}`));
             satellite.x = Math.cos(i * Math.PI / 2) * 110;
             satellite.y = Math.sin(i * Math.PI / 2) * 110;
-            satellite.graphics.beginFill(colors[i]);
-            satellite.graphics.drawRoundRect(-12, -12, 24, 24, 9);
-            satellite.graphics.endFill();
+            satellite.width = satellite.height = 32;
+            satellite.anchorOffsetX = satellite.anchorOffsetY = 16;
             this.orbit.addChild(satellite);
         }
         stage.addChild(this.orbit);
@@ -88,13 +91,14 @@ export class Playground implements NativeScene {
         hero.graphics.endFill();
         hero.graphics.lineStyle(2, 0x67e3bb, 0.9);
         hero.graphics.drawCircle(0, 0, 64);
-        const mascot = new Bitmap(this.texture);
+        const mascot = new Bitmap(getTexture(resources, 'mascot_png'));
         mascot.width = 88;
         mascot.height = 88;
         mascot.anchorOffsetX = 44;
         mascot.anchorOffsetY = 44;
         hero.addChild(mascot);
         stage.addChild(hero);
+        this.text = new TextShowcase(stage);
         hero.addEventListener(TouchEvent.TOUCH_BEGIN, this.onBegin);
         stage.addEventListener(TouchEvent.TOUCH_MOVE, this.onMove);
         stage.addEventListener(TouchEvent.TOUCH_END, this.onEnd);
@@ -134,7 +138,6 @@ export class Playground implements NativeScene {
         this.stage.removeEventListener(TouchEvent.TOUCH_END, this.onEnd);
         this.stage.removeEventListener(TouchEvent.TOUCH_CANCEL, this.onEnd);
         this.stage.removeEventListener(TouchEvent.TOUCH_TAP, this.onTap);
-        this.texture.dispose();
         this.held.clear();
     }
 
@@ -150,6 +153,7 @@ export class Playground implements NativeScene {
         this.hero.x = Math.max(64, Math.min(296, event.stageX));
         this.hero.y = Math.max(70, Math.min(330, event.stageY));
         this.drags++;
+        this.text.update(this.taps, this.drags);
         this.onInteraction({ taps: this.taps, drags: this.drags });
     };
 
@@ -159,6 +163,7 @@ export class Playground implements NativeScene {
 
     private onTap = (event: TouchEvent): void => {
         this.taps++;
+        this.text.update(this.taps, this.drags);
         this.onInteraction({ taps: this.taps, drags: this.drags });
         for (let i = 0; i < 12 && this.particles.length < 120; i++) {
             const shape = new Shape();

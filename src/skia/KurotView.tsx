@@ -8,7 +8,6 @@ import type { SkiaGraphiteViewRef } from 'react-native-skia';
 
 import { NativeTouch } from './NativeTouch';
 import { SkiaRenderer } from './SkiaRenderer';
-import { runAdapterChecks } from './adapter-checks';
 import { createViewport } from './viewport';
 
 export interface NativeScene {
@@ -24,9 +23,9 @@ export interface FrameStats {
 
 interface KurotViewProps {
     width: number;
-    height: number;
+    height?: number;
     createScene(stage: Stage): NativeScene;
-    onStats(stats: FrameStats): void;
+    onStats?(stats: FrameStats): void;
     onError(message: string): void;
 }
 
@@ -34,6 +33,8 @@ export function KurotView({ width, height, createScene, onStats, onError }: Kuro
     const view = useRef<SkiaGraphiteViewRef | undefined>(undefined);
     const input = useRef<NativeTouch | undefined>(undefined);
     const [size, setSize] = useState({ width: 0, height: 0 });
+    // Omitting height fills the native view while retaining logical width.
+    const stageHeight = height ?? (size.width > 0 ? width * size.height / size.width : 0);
 
     useEffect(() => {
         if (!view.current || size.width <= 0 || size.height <= 0) {
@@ -42,15 +43,12 @@ export function KurotView({ width, height, createScene, onStats, onError }: Kuro
         const context = view.current.getContext();
         const renderer = new SkiaRenderer();
         const stage = new Stage();
-        stage.setContentSize(width, height);
+        stage.setContentSize(width, stageHeight);
         stage.frameRate = 60;
         const touch = new NativeTouch(stage);
         input.current = touch;
         let scene: NativeScene;
         try {
-            if (__DEV__) {
-                runAdapterChecks();
-            }
             scene = createScene(stage);
         } catch (error) {
             input.current = undefined;
@@ -60,7 +58,7 @@ export function KurotView({ width, height, createScene, onStats, onError }: Kuro
             onError(error instanceof Error ? error.message : String(error));
             return;
         }
-        const viewport = createViewport(context.width, context.height, width, height);
+        const viewport = createViewport(context.width, context.height, width, stageHeight);
         let previousTime = performance.now();
         let statsTime = previousTime;
         let frames = 0;
@@ -80,7 +78,7 @@ export function KurotView({ width, height, createScene, onStats, onError }: Kuro
                         canvas.clear(Skia.Color('#10192b'));
                         canvas.translate(viewport.x, viewport.y);
                         canvas.scale(viewport.scale, viewport.scale);
-                        canvas.clipRect({ x: 0, y: 0, width, height }, ClipOp.Intersect, true);
+                        canvas.clipRect({ x: 0, y: 0, width, height: stageHeight }, ClipOp.Intersect, true);
                         draws = renderer.render(stage, canvas);
                     } finally {
                         const recording = context.finishRecording();
@@ -90,7 +88,7 @@ export function KurotView({ width, height, createScene, onStats, onError }: Kuro
                     frames++;
                     intervalFrames++;
                     if (now - statsTime >= 1000) {
-                        onStats({ fps: Math.round(intervalFrames * 1000 / (now - statsTime)), draws, frames });
+                        onStats?.({ fps: Math.round(intervalFrames * 1000 / (now - statsTime)), draws, frames });
                         intervalFrames = 0;
                         statsTime = now;
                     }
@@ -141,14 +139,14 @@ export function KurotView({ width, height, createScene, onStats, onError }: Kuro
             renderer.dispose();
             context.dispose();
         };
-    }, [width, height, size, createScene, onStats, onError]);
+    }, [width, stageHeight, size, createScene, onStats, onError]);
 
     const forward = (event: GestureResponderEvent, action: 'begin' | 'move' | 'end'): void => {
-        const viewport = createViewport(size.width, size.height, width, height);
+        const viewport = createViewport(size.width, size.height, width, stageHeight);
         for (const touch of event.nativeEvent.changedTouches) {
             const x = (touch.locationX - viewport.x) / viewport.scale;
             const y = (touch.locationY - viewport.y) / viewport.scale;
-            if (action === 'begin' && (x < 0 || y < 0 || x > width || y > height)) {
+            if (action === 'begin' && (x < 0 || y < 0 || x > width || y > stageHeight)) {
                 continue;
             }
             input.current?.[action](x, y, Number(touch.identifier));

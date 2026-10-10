@@ -1,0 +1,10 @@
+{
+  "generator": "@kurot/skia/project",
+  "files": [
+    "assets.ts",
+    "index.ts",
+    "skins.ts",
+    "skins/ui/skins/ButtonSkin.ts",
+    "theme.json"
+  ]
+}

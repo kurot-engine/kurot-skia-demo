@@ -1,7 +1,7 @@
 import { Rectangle, Shape, Sprite, Stage, TouchEvent } from '@kurot/core';
 
-import { NativeTouch } from './NativeTouch';
-import { createViewport } from './viewport';
+import { NativeTouch } from '../../src/skia/NativeTouch';
+import { createViewport } from '../../src/skia/viewport';
 
 function assert(condition: boolean, message: string): void {
     if (!condition) {

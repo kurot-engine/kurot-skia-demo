@@ -1,2 +1,5 @@
 minimumReleaseAgeExclude:
   - '@kurot/core@2.5.3'
+  - '@kurot/ui@3.5.0'
+  - '@kurot/cli@3.6.0'
+  - '@kurot/ui-document@0.13.1'

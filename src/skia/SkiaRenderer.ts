@@ -1,11 +1,13 @@
 import { Bitmap, BitmapFillMode, DisplayObjectContainer, setGraphicsHitTest } from '@kurot/core';
-import type { DisplayObject, Graphics, Stage } from '@kurot/core';
+import type { DisplayObject, Graphics, Stage, TextField } from '@kurot/core';
 import { ClipOp, FilterMode, MipmapMode, Skia } from 'react-native-skia';
 import type { SkCanvas } from 'react-native-skia';
 
 import { compileGraphics, disposeGraphics, skColor } from './graphics';
 import type { GraphicsDraw } from './graphics';
 import { getSkiaImage } from './textures';
+import { NativeTextRenderer } from './NativeTextRenderer';
+import { drawNineSlice } from './nine-slice';
 
 /**
  * One native player owns Core's global Graphics hit-test hook, like its web Player.
@@ -13,6 +15,7 @@ import { getSkiaImage } from './textures';
 export class SkiaRenderer {
     private readonly graphics = new Map<Graphics, GraphicsDraw[]>();
     private readonly bitmapPaint = Skia.Paint();
+    private readonly text = new NativeTextRenderer();
     private usedGraphics = new Set<Graphics>();
 
     public constructor() {
@@ -22,7 +25,9 @@ export class SkiaRenderer {
 
     public render(stage: Stage, canvas: SkCanvas): number {
         this.usedGraphics = new Set();
+        this.text.beginFrame();
         const count = this.draw(stage, canvas, 1, 0xffffff);
+        this.text.endFrame();
         for (const [graphics, draws] of this.graphics) {
             if (!this.usedGraphics.has(graphics)) {
                 disposeGraphics(draws);
@@ -39,6 +44,7 @@ export class SkiaRenderer {
         }
         this.graphics.clear();
         this.bitmapPaint.dispose();
+        this.text.dispose();
     }
 
     private draw(object: DisplayObject, canvas: SkCanvas, parentAlpha: number, parentTint: number): number {
@@ -87,6 +93,9 @@ export class SkiaRenderer {
                 case 1:
                     count += this.drawBitmap(object as Bitmap, canvas, alpha, tint);
                     break;
+                case 5:
+                    count += this.text.draw(object as TextField, canvas, alpha, tint);
+                    break;
                 case 0:
                     break;
                 default:
@@ -120,8 +129,8 @@ export class SkiaRenderer {
         if (!bitmap.texture || !bitmap.bitmapData) {
             return 0;
         }
-        if (bitmap.fillMode !== BitmapFillMode.SCALE || bitmap.scale9Grid || bitmap.texture.rotated || tint !== 0xffffff || bitmap.pixelHitTest) {
-            throw new Error('Skia prototype: Bitmap supports ordinary unrotated scale textures without tint/pixel hits.');
+        if (bitmap.fillMode !== BitmapFillMode.SCALE || bitmap.texture.rotated || tint !== 0xffffff || bitmap.pixelHitTest) {
+            throw new Error('Skia prototype: Bitmap supports unrotated scale/nine-slice textures without tint/pixel hits.');
         }
         const image = getSkiaImage(bitmap.bitmapData);
         if (!image) {
@@ -130,9 +139,16 @@ export class SkiaRenderer {
         if (bitmap.textureWidth <= 0 || bitmap.textureHeight <= 0 || bitmap.width <= 0 || bitmap.height <= 0) {
             return 0;
         }
+        this.bitmapPaint.setAlphaf(alpha);
+        if (bitmap.scale9Grid) {
+            return drawNineSlice(bitmap, bitmap.scale9Grid, (sx, sy, sw, sh, dx, dy, dw, dh) => {
+                canvas.drawImageRectOptions(image, { x: sx, y: sy, width: sw, height: sh },
+                    { x: dx, y: dy, width: dw, height: dh },
+                    bitmap.smoothing ? FilterMode.Linear : FilterMode.Nearest, MipmapMode.None, this.bitmapPaint);
+            });
+        }
         const scaleX = bitmap.width / bitmap.textureWidth;
         const scaleY = bitmap.height / bitmap.textureHeight;
-        this.bitmapPaint.setAlphaf(alpha);
         canvas.drawImageRectOptions(image, {
             x: bitmap.bitmapX, y: bitmap.bitmapY, width: bitmap.bitmapWidth, height: bitmap.bitmapHeight,
         }, {

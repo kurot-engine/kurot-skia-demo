@@ -1,0 +1,6 @@
+{
+  "skins": {
+    "Button": "skins.ButtonSkin"
+  },
+  "skinsJs": "./skins.js"
+}
