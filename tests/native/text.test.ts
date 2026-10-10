@@ -1,9 +1,9 @@
 import { HorizontalAlign, Rectangle, Sprite, Stage, TextField, TextFieldType, VerticalAlign } from '@kurot/core';
 import { AlphaType, ColorType, Skia } from 'react-native-skia';
 
-import { measureTextMetrics } from '../../src/skia/NativeTextMeasurer';
-import { SkiaRenderer } from '../../src/skia/SkiaRenderer';
-import { createParagraph, nativeFontStyle } from '../../src/skia/paragraph';
+import { measureTextMetrics } from '@kurot/skia';
+import { SkiaRenderer } from '@kurot/skia';
+import { createParagraph, nativeFontStyle } from '@kurot/skia';
 
 const width = 256;
 const height = 192;

@@ -1,7 +1,7 @@
 import { Bitmap, DisplayObjectContainer, Rectangle, Shape, Sprite, TouchEvent } from '@kurot/core';
 import type { Resource, Stage, Texture } from '@kurot/core';
 
-import type { NativeScene } from '../skia/KurotView';
+import type { NativeScene } from '@kurot/skia';
 import { TextShowcase } from './TextShowcase';
 
 const colors = [0x67e3bb, 0x72adff, 0xffd58a, 0xf6a4cc];

@@ -1,11 +1,11 @@
 import { Resource, SpriteSheet, Texture } from '@kurot/core';
 
-import { Event } from '../../node_modules/@kurot/core/dist/kurot/events/Event.js';
-import { IOErrorEvent } from '../../node_modules/@kurot/core/dist/kurot/events/IOErrorEvent.js';
-import { ImageLoader } from '../../src/skia/NativeImageLoader';
-import { HttpRequest } from '../../src/skia/NativeHttpRequest';
-import { getNativeAsset } from '../../src/skia/native-assets';
-import { getSkiaImage } from '../../src/skia/textures';
+import { Event } from '@kurot/core';
+import { IOErrorEvent } from '@kurot/core';
+import { NativeImageLoader as ImageLoader } from '@kurot/skia';
+import { NativeHttpRequest as HttpRequest } from '@kurot/skia';
+import { getNativeAsset } from '@kurot/skia';
+import { getSkiaImage } from '@kurot/skia';
 
 function assert(condition: boolean, message: string): asserts condition {
     if (!condition) {

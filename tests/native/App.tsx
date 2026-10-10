@@ -3,11 +3,13 @@ import type { ReactElement } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import '../../src/resources/bundled';
-import { SkiaRenderer } from '../../src/skia/SkiaRenderer';
+import { SkiaRenderer } from '@kurot/skia';
 import { runAdapterChecks } from './adapter.test';
 import { runResourceChecks } from './resources.test';
 import { runTextChecks } from './text.test';
 import { runUIChecks } from './ui.test';
+import { runGPUNineSliceChecks } from './gpu-nine-slice.test';
+import { runNineSliceCacheChecks } from './nine-slice-cache.test';
 
 /**
  * Separate device test entry: runs against Skia JSI, not mocked Node bindings.
@@ -25,6 +27,8 @@ export function App(): ReactElement {
                 runTextChecks();
                 await runResourceChecks();
                 await runUIChecks();
+                await runGPUNineSliceChecks();
+                runNineSliceCacheChecks();
             } finally {
                 renderer.dispose();
             }
@@ -32,7 +36,8 @@ export function App(): ReactElement {
         void run().then(() => {
             console.info('Kurot Skia: all native tests passed.');
             if (mounted) {
-                setResult('PASS\nNative adapter\nNative resources\nNative TextField\nNative UI / original KUI skin');
+                setFailed(false);
+                setResult('PASS\nNative adapter\nNative resources\nNative TextField\nNative UI / original KUI skin\nGPU nine-slice / fractional transforms\nNative nine-slice cache lifecycle');
             }
         }, (error: unknown) => {
             const message = error instanceof Error ? error.message : String(error);

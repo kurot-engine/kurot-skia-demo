@@ -2,7 +2,7 @@ import { Event, HorizontalAlign, VerticalAlign } from '@kurot/core';
 import type { Resource, Stage } from '@kurot/core';
 import { Button, Group, Label } from '@kurot/ui';
 
-import type { NativeScene } from '../skia/KurotView';
+import type { NativeScene } from '@kurot/skia';
 import { installNativeUI } from '../ui/native-ui';
 
 function label(text: string, size: number): Label {

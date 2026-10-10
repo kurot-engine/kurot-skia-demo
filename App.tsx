@@ -8,8 +8,8 @@ import { View } from 'react-native';
 import './src/resources/bundled';
 import { resourceConfigURL, resourceRoot } from './src/generated/kurot/assets';
 import { UIShowcase } from './src/game/UIShowcase';
-import { KurotView } from './src/skia/KurotView';
-import type { NativeScene } from './src/skia/KurotView';
+import { KurotView } from '@kurot/skia';
+import type { NativeScene } from '@kurot/skia';
 
 function reportError(message: string): void {
     console.error(`Kurot native: ${message}`);

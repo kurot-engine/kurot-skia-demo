@@ -3,7 +3,7 @@ import { getAssetAdapter, getTheme, setAssetAdapter, setTheme, Theme } from '@ku
 import type { IAssetAdapter } from '@kurot/ui';
 
 import { registerSkinFactories, theme as config, themeConfigURL } from '../generated/kurot/skins';
-import { registerNativeSkinModule } from '../skia/NativeTheme';
+import { registerNativeSkinModule } from '@kurot/skia';
 
 /**
  * Shares the scene's Core resource cache with Image components in KUI skins.

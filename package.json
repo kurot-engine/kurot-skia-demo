@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "main": "index.ts",
     "dependencies": {
-        "@formatjs/intl-segmenter": "12.2.15",
         "@kurot/core": "2.5.3",
+        "@kurot/skia": "0.1.2",
         "@kurot/ui": "3.5.0",
         "expo": "~57.0.27",
         "expo-build-properties": "~57.0.22",
@@ -18,7 +18,6 @@
     },
     "devDependencies": {
         "@kurot/cli": "3.6.0",
-        "@kurot/skia": "file:../Kurot-Skia",
         "@kurot/ui-document": "0.13.1",
         "@types/node": "^22.20.5",
         "@types/react": "~19.2.2",
@@ -35,7 +34,8 @@
         "generate:project": "kurot-project --project .",
         "watch:project": "kurot-project --project . --watch",
         "build:skins": "pnpm generate:project",
-        "test:native": "KUROT_NATIVE_TESTS=1 kurot-project --project . --watch -- expo start --dev-client"
+        "test:native": "KUROT_NATIVE_TESTS=1 kurot-project --project . --watch -- expo start --dev-client",
+        "dev": "kurot-project --project . --watch -- expo start --dev-client"
     },
     "private": true
 }

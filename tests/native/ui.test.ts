@@ -3,8 +3,8 @@ import type { Texture } from '@kurot/core';
 import { Button, Group, Image, Label } from '@kurot/ui';
 import { AlphaType, ColorType, Skia } from 'react-native-skia';
 
-import { NativeTouch } from '../../src/skia/NativeTouch';
-import { SkiaRenderer } from '../../src/skia/SkiaRenderer';
+import { NativeTouch } from '@kurot/skia';
+import { SkiaRenderer } from '@kurot/skia';
 import { installNativeUI, NativeUIAssetAdapter } from '../../src/ui/native-ui';
 
 const width = 360;

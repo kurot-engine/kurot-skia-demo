@@ -1,5 +1,5 @@
 {
-  "generator": "@kurot/skia/project",
+  "generator": "@kurot/skia/generator",
   "files": [
     "assets.ts",
     "index.ts",

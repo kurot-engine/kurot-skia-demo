@@ -1,60 +1,77 @@
 # Kurot-Skia-Demo
 
 这是完整的 Expo 示例项目，原目录 `Kurot-Skia` 已改名为 `Kurot-Skia-Demo`。
-相邻的 `../Kurot-Skia` 是新的私有库项目，目前只提供构建时入口生成器。
-Demo 通过开发依赖 `@kurot/skia: file:../Kurot-Skia` 使用它提供的 `kurot-project` 命令。
-RN 适配代码继续保留在本 Demo。
+`@kurot/skia` 库提供原生 Skia 渲染适配、Metro 配置和资源/KUI 入口生成器。
+Demo 通过 npm 运行时依赖 `@kurot/skia@0.1.2` 使用渲染入口和 `kurot-project` 命令，不需要相邻的库源码目录。
+RN 适配代码已迁入库；Demo 保留场景、项目资源、主题初始化和原生集成测试。
 
 这是 Kurot 的原生渲染适配原型。使用已发布的 `@kurot/core@2.5.3` 场景树和 `@kurot/ui@3.5.0`，
 通过 `react-native-skia@3.3.0` 的 `SkiaGraphiteView` 提交绘图。
-游戏逻辑在 JS 线程运行，Skia 原生视图通过 Graphite/Dawn 绘制；Android 使用 Vulkan。
+游戏逻辑在 JS 线程运行，Skia 原生视图通过 Graphite/Dawn 绘制；Android 使用 Vulkan，iOS 使用 Metal。
 本项目未修改 Kurot SDK，也没有使用 WebView 或 DOM 模拟。
 
 ## 运行
 
 ```sh
-pnpm --dir ../Kurot-Skia install
-pnpm --dir ../Kurot-Skia build
 pnpm install
 pnpm android
+
+# iOS 模拟器：首次构建原生开发客户端
+pnpm ios --device "iPhone 17 Pro"
 ```
 
-已有 development build 时，只需启动 Metro：
+已有 development build 时，启动 Demo 和项目资源监听使用一个命令：
 
 ```sh
-pnpm start --dev-client --android
+pnpm dev --android
+pnpm dev --ios
 ```
+
+升级库版本或从本地 `file:` 依赖切换到 npm 包后，首次启动执行 `pnpm dev --clear --ios`
+或 `pnpm dev --clear --android`，清除 Metro 对旧安装路径的缓存。
+
+0.1.2 使用原生 `drawImageNine` 和缓存图集子图。源图区域与九宫格分割线需要落在整数
+物理像素上；2× 资源的 0.5 逻辑坐标仍可使用。现有 Demo 皮肤符合该要求，无需调整资源。
+已有包含 Skia 3.3.0 的 development build 可以复用。
 
 Skia 3 使用 development build，不能用 Expo Go。Android 最低 API 26，设备需要
 支持 Vulkan。当前项目是 Expo 57 / RN 0.86.3 / React 19.2.3。
-iOS 代码路径共用，但这一轮只实测了 Android 模拟器。
+已实测 Android 模拟器和 iPhone 17 Pro（iOS 26.5，Xcode 27.0）。
+iOS 全屏场景、中文 Label、原始 KUI 按钮皮肤和点击计数均正常，原有四组集成测试通过；
+GPU 九宫格回归和子图缓存检查见下文「验证」。
+模拟器验证不代表真机性能测试。
 
 ## 代码分层
+
+渲染与平台适配由 npm 包 `@kurot/skia` 提供，库源码位于其 `src/kurot/`。
+Demo 使用包的公开入口，保留场景、生成资源和项目主题初始化。
+详见安装包内的 `node_modules/@kurot/skia/docs/native-runtime.md` 和 `docs/PLAN.md`，或库的 [GitHub 仓库](https://github.com/kurot-engine/kurot-skia)。
 
 | 文件 | 责任 |
 | --- | --- |
 | `App.tsx` | Resource 加载与全屏画布，隐藏系统状态栏，无外部 RN 文字/按钮 |
 | `src/game/UIShowcase.ts` | 当前 Label/Button 测试场景、按钮启用/禁用和计数 |
 | `src/game/Playground.ts` | 保留的 Sprite/Shape/Bitmap/文字演示场景 |
-| `src/skia/KurotView.tsx` | 原生视图、Core ticker、逻辑视口、前后台与清理 |
-| `src/skia/SkiaRenderer.ts` | 遍历 Core 显示树，应用变换、透明度、裁剪并绘制 |
-| `src/skia/graphics.ts` | Graphics 命令编译为可复用的 SkPath/SkPaint，含命中路径 |
-| `src/skia/textures.ts` | SkImage → Core BitmapData/Texture，支持独立资源密度 |
-| `src/skia/NativeImageLoader.ts` | Core ImageLoader 合约 → 原生异步图片解码 |
-| `src/skia/NativeHttpRequest.ts` | 打包文本/JSON 读取；URI 请求沿用 Core HTTP 传输 |
-| `src/skia/NativeTextMeasurer.ts` | SkParagraph 字形进宽/墨迹 → Core 文字测量 |
-| `src/skia/NativeTextRenderer.ts` | 绘制 Core 排好的文字行，缓存与释放原生 Paragraph |
-| `src/skia/NativeTextSegmentation.ts` | Hermes 的字素/词分段端口，使用 FormatJS 实现 |
+| `@kurot/skia：KurotView.tsx` | 原生视图、Core ticker、逻辑视口、前后台与清理 |
+| `@kurot/skia：SkiaRenderer.ts` | 遍历 Core 显示树，应用变换、透明度、裁剪并绘制 |
+| `@kurot/skia：graphics.ts` | Graphics 命令编译为可复用的 SkPath/SkPaint，含命中路径 |
+| `@kurot/skia：textures.ts` | SkImage → Core BitmapData/Texture，支持独立资源密度 |
+| `@kurot/skia：NativeImageLoader.ts` | Core ImageLoader 合约 → 原生异步图片解码 |
+| `@kurot/skia：NativeHttpRequest.ts` | 打包文本/JSON 读取；URI 请求沿用 Core HTTP 传输 |
+| `@kurot/skia：NativeTextMeasurer.ts` | SkParagraph 字形进宽/墨迹 → Core 文字测量 |
+| `@kurot/skia：NativeTextRenderer.ts` | 绘制 Core 排好的文字行，缓存与释放原生 Paragraph |
+| `@kurot/skia：NativeTextSegmentation.ts` | Hermes 的字素/词分段端口，使用 FormatJS 实现 |
 | `src/resources/bundled.ts` | 将自动生成的静态资源表注册到 native 资源端口 |
 | `src/generated/kurot/` | 资源表、全部 KUI 工厂和主题入口；通过生成命令更新 |
-| `src/skia/NativeTouch.ts` | RN 多指触摸 → Core 命中、冒泡、tap/cancel/releaseOutside |
-| `src/skia/nine-slice.ts` | 与 Core Canvas 相同的逻辑九宫格、密度和 trim 几何 |
-| `src/skia/NativeTheme.ts` | Theme 映射、延迟应用与 Metro 静态皮肤模块注册 |
+| `@kurot/skia：NativeTouch.ts` | RN 多指触摸 → Core 命中、冒泡、tap/cancel/releaseOutside |
+| `@kurot/skia：nine-slice.ts` | 与 Core Canvas 相同的逻辑九宫格、密度和 trim 几何 |
+| `@kurot/skia：NativeTheme.ts` | Theme 映射、延迟应用与 Metro 静态皮肤模块注册 |
 | `src/ui/native-ui.ts` | UI Image 共用 Core Resource，安装/恢复主题和资源适配器 |
 | `tests/native/adapter.test.ts` | 原生路径、变换和输入集成测试 |
 | `tests/native/resources.test.ts` | 清单、图集、缓存和销毁集成测试 |
 | `tests/native/text.test.ts` | 原生文字测量、回退和实际像素验证 |
 | `tests/native/ui.test.ts` | 原皮肤、布局、Label shrink、按钮状态和九宫格像素 |
+| `tests/native/gpu-nine-slice.test.ts` | 真实 GPU 回读，覆盖分数变换、透明度、密度/trim、边框退化和 KUI 接缝 |
 | `tests/native/App.tsx` | 独立原生测试入口与结果显示 |
 
 场景仍然使用 Kurot 的 API：
@@ -168,7 +185,7 @@ Label、Button、Group、Image、Skin、BasicLayout 和 State/SetProperty 都使
 
 `resource/ui/skins/ButtonSkin.kui.xml` 和 `resource/config/style.json` 原样复制自
 SDK 的 `examples/game`；图集与 resource.json 的原有 subkeys 也保持原格式。
-通过本地依赖 `@kurot/skia` 提供的命令调用 CLI 3.6.0 编译器，颜色引用和默认九宫格由原编译器解析：
+通过 npm 包 `@kurot/skia` 提供的命令调用 CLI 3.6.0 编译器，颜色引用和默认九宫格由原编译器解析：
 
 ```sh
 pnpm generate:project
@@ -185,6 +202,11 @@ pnpm exec kurot-project --project .
 新增/删除/重命名皮肤也会同步静态工厂和主题；生成失败保留上次结果，修复后继续。
 Ctrl+C 或 Expo 退出时会一起关闭 watcher。
 
+watch 保证生成文件自动更新，目前不提供运行中 Resource 缓存和 Skin 实例的原位替换。
+修改图片或皮肤后若画面仍显示旧内容，重新加载应用，让资源和场景重新初始化。
+`pnpm dev` 使用已安装的 npm 包，监听项目资源并启动 Expo development client。
+升级库时通过 Expo 安装所需版本，再重新启动开发服务器；这个命令不编译或同步库源码。
+
 ```sh
 # 生成器 + Expo 开发服务器，日常开发用这个即可
 pnpm start --dev-client --android
@@ -194,11 +216,11 @@ pnpm watch:project
 ```
 
 直接执行 `pnpm exec expo ...` 不会启动 watcher，需要另行运行 `pnpm watch:project`。
-生成脚本为 `kurot-project --project .`，命令由本地依赖的 `bin` 注册。
-修改库源码后先在库项目执行 `pnpm build`；新增编译文件或修改包元数据后，在 Demo
-执行 `pnpm install` 同步本地依赖。库的编译步骤独立于 Demo 的资源生成步骤。
+生成脚本为 `kurot-project --project .`，命令由 npm 依赖的 `bin` 注册。
+`pnpm dev`、`pnpm start` 等命令都使用已安装的库并监听项目资源。
+如需联合开发库源码，先显式切回本地 `file:` 依赖，再按安装包内 `docs/development.md` 的流程运行库的开发工具。
 生成器使用 AST 增加工厂返回类型和动态字段类型，保留原编译器的字段赋值、布局与状态。
-详见 [库项目说明](../Kurot-Skia/README.md)。
+详见安装包内的 `README.md`。
 
 浏览器 Theme 的动态 `import(moduleUrl)` 不能通过 Metro，因此 native 解析到
 `NativeTheme`。它保留主题映射、延迟应用和 COMPLETE/IO_ERROR 生命周期，
@@ -245,20 +267,20 @@ blendMode、cacheAsTexture/RenderTexture、Bitmap tint/repeat/旋转图集/pixel
 保留 Playground 的粒子只是普通 Shape。当前画面全部由 Kurot 场景树绘制。
 目前逐帧遍历场景树，尚未移植 WebGL 的 InstructionSet 增量管线或 Skia Atlas 批处理。
 
-## 临时平台入口
+## 库提供的平台入口
 
 Core 的公开根入口包含浏览器渲染器，会加载 Hermes 当前不提供的
-`FinalizationRegistry`。`metro.config.js` 在 Android/iOS 上把 `@kurot/core`
-指向 `core-native.ts`，只重导出安装包里的真实场景模块；场景树内部的浏览器
+`FinalizationRegistry`。`metro.config.js` 使用 `@kurot/skia/metro` 的 `createKurotResolver()`，
+在 Android/iOS 上把 `@kurot/core` 指向库的原生入口，只重导出安装包里的真实场景模块；场景树内部的浏览器
 DisplayList 工厂则替换为明确拒绝缓存操作的 `NativeDisplayList`。
 资源模块内部的两个浏览器 I/O 入口分别替换为 native 端口。
 TextField 的测量/分段入口也使用 native 端口，InputController 则明确拒绝未适配的编辑模式。
 UI 的 Theme 模块使用原生端口，其他组件保持发布包代码。
-TypeScript 使用相同入口，不会把未支持的根导出误当成可用。
+TypeScript 使用发布包的公开类型；原生渲染仍受已实现能力约束，不代表全部 Core 导出都可在手机上使用。
 
 此处依赖 SDK 的内部文件布局与擦除后的 const enum 数值，因此固定 Core 2.5.3 / UI 3.5.0。
-升级前需要重新验证入口和命令映射。后续做正式 `@kurot/skia` 时，应先让 Core 提供
-公开的平台无关入口和可注入的缓存/文本/资源接口，再把 `src/skia` 抽到库中。
+版本检查和平台映射由库负责，升级前需要重新验证入口和命令映射。
+平台差异继续在 Skia 库内适配，不要求修改 Core；Demo 不维护一份渲染适配源码。
 
 ## 验证
 
@@ -272,11 +294,13 @@ git diff --check
 已有 development build 时，先停止普通 Metro，再单独启动测试入口：
 
 ```sh
-pnpm test:native --android
+pnpm test:native --android --clear
+pnpm test:native --ios --clear
 ```
 
 测试会自动运行，页面显示 PASS/FAIL，控制台输出具体错误或
-`Kurot Skia: all native tests passed`。结束后停止测试 Metro，再运行普通 `pnpm start`。
+`Kurot Skia: all native tests passed`。结束后停止测试 Metro，再运行普通 `pnpm dev --ios --clear`
+或 `pnpm dev --android --clear`；切换测试与普通入口时清理 Metro 缓存。
 `KUROT_NATIVE_TESTS=1` 仅让 Metro 将根入口的 App 导入切到 `tests/native/App.tsx`；
 普通入口不引用测试模块。测试需要设备/模拟器中的真实 Skia JSI，不使用 Node mock。
 
@@ -291,8 +315,28 @@ flip、Graphics 更新、触摸坐标/冒泡/maxTouches/取消/tap/releaseOutsid
 `Kurot Skia: native text checks passed`。
 UI 测试验证主题延迟绑定、原始皮肤 parts、边距布局、Label shrink、实际触摸按下/松手/
 移出/取消/禁用/移除，以及资源缓存和九宫格缩放的固定边角像素。
+新增 GPU 九宫格测试用 `MakeOffscreen` 并断言快照具有 GPU backing；48 个用例检查
+分数位移/缩放、旋转/翻转、最近邻/线性过滤、图片与对象透明度、1×/2× 图集、trim、
+固定边框、中心退化、小尺寸回退和原始 KUI up/down/disabled 帧。
+这组测试在 npm `@kurot/skia@0.1.0` 上会复现接缝并失败；0.1.1 已发布 shader 修复，
+Demo 现在采用已发布 0.1.2 的原生 `drawImageNine` 和子图缓存实现。
+`nine-slice-cache.test.ts` 另检查重复绘制、尺寸/过滤/分割线变化和皮肤状态切换时的子图复用，
+以及逐帧淘汰、renderer 销毁和小数物理分割线的显式拒绝。
+2026-10-11 在独立 Demo 的本地 `file:` 安装中，0.1.2 实现通过 iOS 18.2（iPhone SE 3）与
+iOS 26.5（iPhone 17 Pro）的全部原生测试和同一组未修改的 48 个 GPU 用例。
+同日更新为 npm `@kurot/skia@0.1.2` 后，安装、资源生成、类型检查和 Android bundle 导出通过；
+lint 无错误，保留 14 项既有重复导入警告。iPhone 17 Pro（iOS 26.5）再次通过全部原生测试，
+包括 48 项 GPU 九宫格用例和子图缓存生命周期检查。
+验证未发布的库改动时，按库的 `docs/development.md` 配置明确的本地依赖，从库启动：
+
+```sh
+KUROT_NATIVE_TESTS=1 pnpm dev --project ../MyGame -- expo start --dev-client --ios --clear
+```
+
+测试结束后停止服务器，去掉 `KUROT_NATIVE_TESTS` 并加 `--clear` 启动普通场景。
 Android 模拟器已显示完整场景；`expo export --platform android` 已生成 Hermes bundle
-及两张打包 PNG。iOS 和远程清单尚未实测。
+及两张打包 PNG。iOS 模拟器已完成原生 Debug 构建、完整场景显示和全部原生集成测试，
+Skia 日志确认 Graphite/Dawn 使用 Metal 后端。远程清单和真机性能尚未实测。
 可选 onStats 中的 FPS 是 JS 帧提交频率，draws 是绘图命令数，不等于 GPU 批次数。
 
 Kurot 标识来自 SDK 的 `examples/game/template/web/logo.png`。
