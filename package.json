@@ -27,14 +27,15 @@
         "typescript": "~6.0.3"
     },
     "scripts": {
-        "start": "pnpm generate:project && expo start",
-        "android": "pnpm generate:project && expo run:android",
-        "ios": "pnpm generate:project && expo run:ios",
-        "web": "pnpm generate:project && expo start --web",
+        "start": "kurot-project --project . --watch -- expo start",
+        "android": "kurot-project --project . --watch -- expo run:android",
+        "ios": "kurot-project --project . --watch -- expo run:ios",
+        "web": "kurot-project --project . --watch -- expo start --web",
         "lint": "expo lint",
         "generate:project": "kurot-project --project .",
+        "watch:project": "kurot-project --project . --watch",
         "build:skins": "pnpm generate:project",
-        "test:native": "pnpm generate:project && KUROT_NATIVE_TESTS=1 expo start --dev-client"
+        "test:native": "KUROT_NATIVE_TESTS=1 kurot-project --project . --watch -- expo start --dev-client"
     },
     "private": true
 }

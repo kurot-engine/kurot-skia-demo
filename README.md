@@ -180,7 +180,20 @@ pnpm exec kurot-project --project .
 自动读取 `resource/resource.json`、追踪图集图片并递归编译 resource 下的所有 KUI，
 生成 `src/generated/kurot/` 中的静态资源表、皮肤工厂、主题和统一入口。
 添加资源或皮肤后不需要修改手工表或注册代码。`build:skins` 保留为该命令的别名。
-`pnpm start/android/ios/test:native` 会先生成；直接执行 `pnpm exec expo ...` 前需先生成。
+`pnpm start/android/ios/web/test:native` 会先生成并持续监听，再启动 Expo。
+保存 resource.json、图片、图集 JSON、文本、KUI 或 style.json 后会自动重新生成。
+新增/删除/重命名皮肤也会同步静态工厂和主题；生成失败保留上次结果，修复后继续。
+Ctrl+C 或 Expo 退出时会一起关闭 watcher。
+
+```sh
+# 生成器 + Expo 开发服务器，日常开发用这个即可
+pnpm start --dev-client --android
+
+# 只启动 watcher，适合另一个终端单独运行 expo
+pnpm watch:project
+```
+
+直接执行 `pnpm exec expo ...` 不会启动 watcher，需要另行运行 `pnpm watch:project`。
 生成脚本为 `kurot-project --project .`，命令由本地依赖的 `bin` 注册。
 修改库源码后先在库项目执行 `pnpm build`；新增编译文件或修改包元数据后，在 Demo
 执行 `pnpm install` 同步本地依赖。库的编译步骤独立于 Demo 的资源生成步骤。
