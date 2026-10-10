@@ -1,0 +1,20 @@
+// Temporary native entry for the exact published Core installation, without its browser barrel.
+export { DisplayObject } from '../../node_modules/@kurot/core/dist/kurot/display/DisplayObject.js';
+export { DisplayObjectContainer } from '../../node_modules/@kurot/core/dist/kurot/display/DisplayObjectContainer.js';
+export { Stage } from '../../node_modules/@kurot/core/dist/kurot/display/Stage.js';
+export { Sprite } from '../../node_modules/@kurot/core/dist/kurot/display/Sprite.js';
+export { Shape } from '../../node_modules/@kurot/core/dist/kurot/display/Shape.js';
+export { Bitmap } from '../../node_modules/@kurot/core/dist/kurot/display/Bitmap.js';
+export { BitmapData } from '../../node_modules/@kurot/core/dist/kurot/display/texture/BitmapData.js';
+export { Texture } from '../../node_modules/@kurot/core/dist/kurot/display/texture/Texture.js';
+export { SpriteSheet } from '../../node_modules/@kurot/core/dist/kurot/display/texture/SpriteSheet.js';
+export { Graphics, setGraphicsHitTest } from '../../node_modules/@kurot/core/dist/kurot/display/Graphics.js';
+export type { GraphicsCommand, PathCommandType } from '../../node_modules/@kurot/core/dist/kurot/display/GraphicsPath.js';
+export { BitmapFillMode } from '../../node_modules/@kurot/core/dist/kurot/display/enums/BitmapFillMode.js';
+export { Event } from '../../node_modules/@kurot/core/dist/kurot/events/Event.js';
+export { TouchEvent } from '../../node_modules/@kurot/core/dist/kurot/events/TouchEvent.js';
+export { EventDispatcher } from '../../node_modules/@kurot/core/dist/kurot/events/EventDispatcher.js';
+export { Matrix } from '../../node_modules/@kurot/core/dist/kurot/geom/Matrix.js';
+export { Point } from '../../node_modules/@kurot/core/dist/kurot/geom/Point.js';
+export { Rectangle } from '../../node_modules/@kurot/core/dist/kurot/geom/Rectangle.js';
+export { ticker, getTimer } from '../../node_modules/@kurot/core/dist/kurot/player/SystemTicker.js';
