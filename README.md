@@ -1,12 +1,14 @@
 # Kurot-Skia-Demo
 
-完整的 Expo / React Native 示例，使用 npm **`@kurot/skia@0.1.4`** 的渲染与 Spine
-共享缓存。package.json、lockfile 和安装版本均固定为 0.1.4。
+完整的 Expo / React Native 示例，使用 npm **`@kurot/skia@0.1.5`** 的渲染与 Spine
+共享缓存。package.json、lockfile 和安装版本均固定为 0.1.5。
 渲染、Metro 适配和 `kurot-project` 生成器来自安装包。项目不依赖相邻的库目录，
 也不直接导入其 `dist`。
 宿主保持 Core 2.5.3、UI 3.5.0、RN Skia 3.3.0；Spine 示例使用已发布的 Spine 4.2 SDK 0.2.1。
 Core/UI/Spine SDK 源码与 Web 工作流保持不变。
-0.1.4 拆分内部渲染职责，更新 `onStats` / `onError` 时保留场景实例；
+0.1.5 增加可选 Picture 缓存、内部目录整理和导出分组，应用继续使用公开包入口。
+Picture 缓存需显式创建 `NativePictureCache`，失效/释放及测量限制见安装包内
+`docs/native-runtime.md`。延续 0.1.4 的通知回调行为，更新 `onStats` / `onError` 时保留场景实例；
 `createScene` 或视口变化仍会重新创建场景。
 
 ## 运行
@@ -81,7 +83,7 @@ pnpm watch:project
 
 ## 验证
 
-2026-10-11 已验证 npm 0.1.4 的发布、下载完整性和 124 个编译文件，安装与冻结 lockfile、
+2026-10-11 已验证 npm 0.1.5 的发布、下载完整性和 130 个编译文件，安装与冻结 lockfile、
 资源生成、TypeScript、lint 及 iOS/Android 生产 JS 导出均通过。Skia/UI/Spine 与应用共享一份 Core 2.5.3。
 现有依赖树保留 Metro peer 提示：RN community CLI 要求 0.86.3，锁文件中的 Metro config 为 0.87.1。
 

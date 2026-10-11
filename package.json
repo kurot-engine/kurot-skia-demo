@@ -4,7 +4,7 @@
     "main": "index.ts",
     "dependencies": {
         "@kurot/core": "2.5.3",
-        "@kurot/skia": "0.1.4",
+        "@kurot/skia": "0.1.5",
         "@kurot/spine-4.2": "0.2.1",
         "@kurot/ui": "3.5.0",
         "expo": "~57.0.27",
