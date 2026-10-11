@@ -1,11 +1,23 @@
-import { Bitmap, DisplayObjectContainer, Rectangle, Shape, Sprite, TouchEvent } from '@kurot/core';
-import type { Resource, Stage, Texture } from '@kurot/core';
+import {
+    Bitmap,
+    DisplayObjectContainer,
+    Rectangle,
+    Shape,
+    Sprite,
+    TouchEvent,
+} from "@kurot/core";
+import type { Resource, Stage, Texture } from "@kurot/core";
 
-import type { NativeScene } from '@kurot/skia';
-import { TextShowcase } from './TextShowcase';
+import type { NativeScene } from "@kurot/skia";
+import { TextShowcase } from "./TextShowcase";
 
 const colors = [0x67e3bb, 0x72adff, 0xffd58a, 0xf6a4cc];
-const icons = ['checkbox_selected', 'radio_selected', 'slider_thumb', 'close_up'];
+const icons = [
+    "checkbox_selected",
+    "radio_selected",
+    "slider_thumb",
+    "close_up",
+];
 
 function getTexture(resources: Resource, name: string): Texture {
     const texture = resources.get<Texture>(name);
@@ -37,8 +49,11 @@ export class Playground implements NativeScene {
     private drags = 0;
     private time = 0;
 
-    public constructor(private readonly stage: Stage, resources: Resource,
-        private readonly onInteraction: (stats: InteractionStats) => void) {
+    public constructor(
+        private readonly stage: Stage,
+        resources: Resource,
+        private readonly onInteraction: (stats: InteractionStats) => void,
+    ) {
         const background = new Shape();
         for (let y = 24; y < 500; y += 28) {
             for (let x = 26; x < 360; x += 28) {
@@ -57,7 +72,9 @@ export class Playground implements NativeScene {
         clipped.graphics.drawRoundRect(18, 0, 304, 56, 20);
         clipped.graphics.endFill();
         for (let i = 0; i < 11; i++) {
-            const tile = new Bitmap(getTexture(resources, `kui.${icons[i % icons.length]}`));
+            const tile = new Bitmap(
+                getTexture(resources, `kui.${icons[i % icons.length]}`),
+            );
             tile.x = i * 36;
             tile.y = 14;
             tile.width = tile.height = 28;
@@ -72,9 +89,11 @@ export class Playground implements NativeScene {
         this.orbit.x = 180;
         this.orbit.y = 205;
         for (let i = 0; i < 4; i++) {
-            const satellite = new Bitmap(getTexture(resources, `kui.${icons[i]}`));
-            satellite.x = Math.cos(i * Math.PI / 2) * 110;
-            satellite.y = Math.sin(i * Math.PI / 2) * 110;
+            const satellite = new Bitmap(
+                getTexture(resources, `kui.${icons[i]}`),
+            );
+            satellite.x = Math.cos((i * Math.PI) / 2) * 110;
+            satellite.y = Math.sin((i * Math.PI) / 2) * 110;
             satellite.width = satellite.height = 32;
             satellite.anchorOffsetX = satellite.anchorOffsetY = 16;
             this.orbit.addChild(satellite);
@@ -91,7 +110,7 @@ export class Playground implements NativeScene {
         hero.graphics.endFill();
         hero.graphics.lineStyle(2, 0x67e3bb, 0.9);
         hero.graphics.drawCircle(0, 0, 64);
-        const mascot = new Bitmap(getTexture(resources, 'mascot_png'));
+        const mascot = new Bitmap(getTexture(resources, "mascot_png"));
         mascot.width = 88;
         mascot.height = 88;
         mascot.anchorOffsetX = 44;
@@ -173,8 +192,13 @@ export class Playground implements NativeScene {
             shape.graphics.drawRoundRect(-4, -4, 8, 8, 3);
             shape.graphics.endFill();
             this.stage.addChild(shape);
-            const angle = i * Math.PI / 6;
-            this.particles.push({ shape, vx: Math.cos(angle) * 100, vy: Math.sin(angle) * 100 - 70, age: 0 });
+            const angle = (i * Math.PI) / 6;
+            this.particles.push({
+                shape,
+                vx: Math.cos(angle) * 100,
+                vy: Math.sin(angle) * 100 - 70,
+                age: 0,
+            });
         }
     };
 }

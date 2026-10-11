@@ -12,8 +12,8 @@ importers:
         specifier: 2.5.3
         version: 2.5.3
       '@kurot/skia':
-        specifier: 0.1.2
-        version: 0.1.2(@kurot/core@2.5.3)(@kurot/ui@3.5.0(@kurot/core@2.5.3))(react-native-skia@3.3.0(7a0c83ad700292916dcf39140ecc6c18))(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.87.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+        specifier: 0.1.4
+        version: 0.1.4(@kurot/core@2.5.3)(@kurot/ui@3.5.0(@kurot/core@2.5.3))(react-native-skia@3.3.0(7a0c83ad700292916dcf39140ecc6c18))(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.87.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
       '@kurot/spine-4.2':
         specifier: 0.2.1
         version: 0.2.1(@kurot/core@2.5.3)
@@ -898,8 +898,8 @@ packages:
   '@kurot/core@2.5.3':
     resolution: {integrity: sha512-W23Wrx3LJHz4AsEApotzp0jxnwj5luMQ0hfigC9tPCWYbe7HZtU7cN0JRF4H6uF/Szz/MrJRgYBvMJYDs0SCMQ==}
 
-  '@kurot/skia@0.1.2':
-    resolution: {integrity: sha512-/ZUUALthX2FvPNMZCrdAqUmIQtmN17o5JuhzCkPyuRHicEibMiNKa05SXR5NdTGtUPivkCDqvF2AiqgVGxNTJQ==}
+  '@kurot/skia@0.1.4':
+    resolution: {integrity: sha512-pC+hfHj28U44vIFYtloYxJnTyw9VH5JJejJrqvr4mvAtodkTSZD922pGs33JoyeXk2T8h1vhH+9VwwWudQTD+w==}
     engines: {node: '>=20'}
     hasBin: true
     peerDependencies:
@@ -4706,7 +4706,7 @@ snapshots:
       '@cto.af/linebreak': 4.0.3
       '@kurot/bitmap-font': 0.1.0
 
-  '@kurot/skia@0.1.2(@kurot/core@2.5.3)(@kurot/ui@3.5.0(@kurot/core@2.5.3))(react-native-skia@3.3.0(7a0c83ad700292916dcf39140ecc6c18))(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.87.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)':
+  '@kurot/skia@0.1.4(@kurot/core@2.5.3)(@kurot/ui@3.5.0(@kurot/core@2.5.3))(react-native-skia@3.3.0(7a0c83ad700292916dcf39140ecc6c18))(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.87.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)':
     dependencies:
       '@formatjs/intl-segmenter': 12.2.15
       '@kurot/bitmap-font': 0.1.0

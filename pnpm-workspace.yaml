@@ -5,7 +5,7 @@ minimumReleaseAgeExclude:
   - '@kurot/ui@3.5.0'
   - '@kurot/cli@3.6.0'
   - '@kurot/ui-document@0.13.1'
-  - '@kurot/skia@0.1.2'
+  - '@kurot/skia@0.1.4'
 allowBuilds:
   esbuild: false
   unrs-resolver: false

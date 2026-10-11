@@ -42,14 +42,25 @@ Docs: https://docs.expo.dev/eas/index.md
 
 ## Kurot integration
 
-The Demo consumes npm `@kurot/skia` exactly at 0.1.2, with Core 2.5.3 and UI 3.5.0.
-The current checkpoint prepares a Spine 4.2 / 20-actor scene and cached-pose tests
-for Skia 0.1.3. That release is not yet verified on npm; the dependency and lock
-remain 0.1.2, so the new cache API imports currently fail type checking. Do not
-treat this checkpoint as runnable or claim native acceptance. After publication,
-install exact npm 0.1.3 with Expo, regenerate assets and run type/lint/native checks.
-The SDK Spine dependency is registry 0.2.1. Keep the preparation status in README
-until registry adoption and validation are actually complete.
+The Demo consumes npm `@kurot/skia` exactly at 0.1.4, with Core 2.5.3 and UI 3.5.0.
+The dependency, lockfile and installation use the verified registry release;
+generated assets include the original Spine 4.2 binary skeleton, atlas and PNG.
+The SDK Spine dependency is registry 0.2.1. The default scene shows 20 Spineboy
+players with staggered phases and opt-in 60 Hz shared pose caching. It can switch
+to the original live SDK, synchronize phases, pause, and return to the UI scene.
+Version 0.1.4 publication, registry download/integrity and all 124 compiled files
+were verified against the tested library checkout on 2026-10-11. Its notification
+callback changes preserve the native scene; factory/viewport changes still recreate it.
+The Demo retains one shared Core across Skia, UI and Spine. Frozen-lock installation,
+generation, type checking, lint and iOS/Android production JS exports pass on
+the 0.1.4 registry installation. Existing Metro peer metadata still reports
+0.87.1 installed versus community CLI 0.86.3; only Skia changed in the lockfile.
+For 0.1.3, the iPhone 17 Pro / iOS 26.5 Release simulator test entry passed adapter, resource,
+text, KUI, all 48 GPU nine-slice cases, crop-cache lifecycle, and the registry
+Spine cache checks (20 distinct phases, four GPU pose comparisons, clocks and
+disposal). The ordinary Release Demo also passed manual mode/phase/pause controls,
+UI click counts and enable state, and round-trip scene navigation. This establishes
+simulator integration, not physical-device FPS.
 This release uses native drawImageNine and cached atlas crops. Source frames and
 nine-slice boundaries must be integer physical pixels; logical half-pixel grids
 remain valid at 2× density. Keep the GPU and crop-cache native regressions.

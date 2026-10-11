@@ -1,29 +1,18 @@
 # Kurot-Skia-Demo
 
-完整的 Expo / React Native 示例。本次提交预备接入 **`@kurot/skia@0.1.3`** 的 Spine
-共享缓存，当前 package.json / lockfile / 安装仍使用 npm **0.1.2**，等待 0.1.3 发布完成。
-新增场景和测试需要 0.1.3 API，当前检查点还不能直接运行，类型检查会报告缓存 API 缺失。
-渲染、Metro 适配和 `kurot-project` 生成器继续来自安装包。项目不依赖相邻的库目录，
+完整的 Expo / React Native 示例，使用 npm **`@kurot/skia@0.1.4`** 的渲染与 Spine
+共享缓存。package.json、lockfile 和安装版本均固定为 0.1.4。
+渲染、Metro 适配和 `kurot-project` 生成器来自安装包。项目不依赖相邻的库目录，
 也不直接导入其 `dist`。
 宿主保持 Core 2.5.3、UI 3.5.0、RN Skia 3.3.0；Spine 示例使用已发布的 Spine 4.2 SDK 0.2.1。
 Core/UI/Spine SDK 源码与 Web 工作流保持不变。
+0.1.4 拆分内部渲染职责，更新 `onStats` / `onError` 时保留场景实例；
+`createScene` 或视口变化仍会重新创建场景。
 
 ## 运行
 
-先确认 npm 0.1.3 已发布，再完成接入和验证：
-
 ```sh
-pnpm exec expo install '@kurot/skia@0.1.3' --pnpm
-pnpm generate:project
-pnpm exec tsc --noEmit
-pnpm lint
-```
-
-发布后需要同步依赖声明和 lockfile、重新生成二进制/atlas 资源，再运行原生测试。
-下方场景说明是 0.1.3 接入后的目标行为，尚未在此 Demo 的 npm 安装中验收。
-
-```sh
-pnpm install
+pnpm install --frozen-lockfile
 
 # 第一次安装原生开发客户端
 pnpm ios --device "iPhone 17 Pro"
@@ -41,7 +30,7 @@ Expo Go 不包含此项目的 Skia 原生模块。现有包含 Skia 3.3.0 的 de
 
 ## 当前画面
 
-完成 0.1.3 接入后，启动将显示 **20 个 Spineboy**，使用原始 `walk` 动作与骨骼/图集，默认错开 61 ms 相位并开启
+启动显示 **20 个 Spineboy**，使用原始 `walk` 动作与骨骼/图集，默认错开 61 ms 相位并开启
 60 Hz 共享缓存。所有文字和按钮都由 Kurot UI/KUI 绘制，画布保持全屏。
 
 - 「缓存 60 Hz / 实时骨骼」切换共享预采样和原 SDK 实时计算。
@@ -91,6 +80,15 @@ pnpm watch:project
 2× 密度的 0.5 逻辑坐标有效。现有皮肤无需修改。
 
 ## 验证
+
+2026-10-11 已验证 npm 0.1.4 的发布、下载完整性和 124 个编译文件，安装与冻结 lockfile、
+资源生成、TypeScript、lint 及 iOS/Android 生产 JS 导出均通过。Skia/UI/Spine 与应用共享一份 Core 2.5.3。
+现有依赖树保留 Metro peer 提示：RN community CLI 要求 0.86.3，锁文件中的 Metro config 为 0.87.1。
+
+npm 0.1.3 的历史原生验收记录：
+iPhone 17 Pro / iOS 26.5 模拟器的 Release 测试入口显示全部 PASS，包含下面的 GPU 与缓存回归。
+普通 Release Demo 也已验证 20 个角色、缓存/实时切换、相位、暂停恢复，以及 UI 点击、
+启用状态和往返切换；模拟器留在默认缓存 Spine 页面。本次验证没有测量真机帧率。
 
 ```sh
 pnpm generate:project

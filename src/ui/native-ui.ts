@@ -1,9 +1,19 @@
-import type { Resource, Texture } from '@kurot/core';
-import { getAssetAdapter, getTheme, setAssetAdapter, setTheme, Theme } from '@kurot/ui';
-import type { IAssetAdapter } from '@kurot/ui';
+import type { Resource, Texture } from "@kurot/core";
+import {
+    getAssetAdapter,
+    getTheme,
+    setAssetAdapter,
+    setTheme,
+    Theme,
+} from "@kurot/ui";
+import type { IAssetAdapter } from "@kurot/ui";
 
-import { registerSkinFactories, theme as config, themeConfigURL } from '../generated/kurot/skins';
-import { registerNativeSkinModule } from '@kurot/skia';
+import {
+    registerSkinFactories,
+    theme as config,
+    themeConfigURL,
+} from "../generated/kurot/skins";
+import { registerNativeSkinModule } from "@kurot/skia";
 
 /**
  * Shares the scene's Core resource cache with Image components in KUI skins.
@@ -11,7 +21,10 @@ import { registerNativeSkinModule } from '@kurot/skia';
 export class NativeUIAssetAdapter implements IAssetAdapter {
     public constructor(private readonly resources: Resource) {}
 
-    public getAsset(source: string, callback: (content: Texture | undefined, source: string) => void): void {
+    public getAsset(
+        source: string,
+        callback: (content: Texture | undefined, source: string) => void,
+    ): void {
         const cached = this.resources.get<Texture>(source);
         if (cached) {
             callback(cached, source);
@@ -41,7 +54,7 @@ export function installNativeUI(resources: Resource): () => void {
     });
     return (): void => {
         if (getTheme() === theme) {
-            setTheme(previousTheme ?? new Theme(''));
+            setTheme(previousTheme ?? new Theme(""));
             setAssetAdapter(previousAdapter);
         }
         restoreFactories();
