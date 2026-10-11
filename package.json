@@ -32,6 +32,7 @@
         "ios": "kurot-project --project . --watch -- expo run:ios",
         "web": "kurot-project --project . --watch -- expo start --web",
         "lint": "expo lint",
+        "test:game": "tsc --project tests/game/tsconfig.json && node --test dist/game-tests/tests/game/*.test.js",
         "generate:project": "kurot-project --project .",
         "watch:project": "kurot-project --project . --watch",
         "build:skins": "pnpm generate:project",

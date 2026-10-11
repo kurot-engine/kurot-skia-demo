@@ -76,7 +76,7 @@ export class SpineShowcase implements NativeScene {
         this.root.height = stage.stageHeight;
         this.crowd.y = 238;
         this.root.addChild(this.crowd);
-        this.root.addChild(label("Spineboy × 20 · Skia 0.1.4", 22, 56));
+        this.root.addChild(label("Spineboy × 20 · 共享姿态缓存", 22, 56));
         const width = (stage.stageWidth - 44) / 2;
         this.mode = button("缓存 60 Hz", 16, 94, width);
         this.phase = button("错开相位", 28 + width, 94, width);
@@ -115,7 +115,7 @@ export class SpineShowcase implements NativeScene {
                 this.bounds = this.measureBounds(assets);
                 this.rebuild();
                 console.info(
-                    "Kurot Demo: npm Skia 0.1.4, 20 cached Spineboy, staggered phases ready.",
+                    "Kurot Demo: 20 cached Spineboy, staggered phases ready.",
                 );
             })
             .catch((error: unknown) => {

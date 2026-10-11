@@ -5,6 +5,7 @@
     "index.ts",
     "skins.ts",
     "skins/ui/skins/ButtonSkin.ts",
+    "skins/ui/skins/RunnerSkin.ts",
     "theme.json"
   ]
 }

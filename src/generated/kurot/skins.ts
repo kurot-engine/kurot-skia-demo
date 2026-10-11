@@ -2,11 +2,13 @@
 
 import type { Skin } from "@kurot/ui";
 import { createButtonSkin as skin0 } from "./skins/ui/skins/ButtonSkin";
+import { createRunnerSkin as skin1 } from "./skins/ui/skins/RunnerSkin";
 
 export type SkinFactory = () => Skin;
 
 export const skinFactories = {
     ["skins.ButtonSkin"]: skin0,
+    ["skins.RunnerSkin"]: skin1,
 } as const satisfies Readonly<Record<string, SkinFactory>>;
 
 export const theme = {"skins":{"Button":"skins.ButtonSkin"},"skinsJs":"./skins.js"};

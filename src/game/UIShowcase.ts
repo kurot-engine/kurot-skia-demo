@@ -32,6 +32,7 @@ export class UIShowcase implements NativeScene {
     private readonly disabled = button("禁用状态", 76);
     private readonly toggle = button("启用中间的按钮", 152);
     private readonly spine = button("Spine × 20", 0);
+    private readonly game = button("返回星轨疾跑", 0);
     private readonly restoreUI: () => void;
     private taps = 0;
 
@@ -39,6 +40,7 @@ export class UIShowcase implements NativeScene {
         stage: Stage,
         resources: Resource,
         private readonly onSpine: () => void,
+        private readonly onGame: () => void,
     ) {
         this.restoreUI = installNativeUI(resources);
         this.root.width = stage.stageWidth;
@@ -68,7 +70,7 @@ export class UIShowcase implements NativeScene {
         controls.addChild(this.disabled);
         controls.addChild(this.toggle);
         this.counter.left = this.counter.right = 24;
-        this.counter.bottom = 64;
+        this.counter.bottom = 120;
         this.counter.height = 32;
         this.primary.addEventListener(Event.CHANGE, this.onClick);
         this.disabled.addEventListener(Event.CHANGE, this.onClick);
@@ -79,10 +81,16 @@ export class UIShowcase implements NativeScene {
         this.root.addChild(this.counter);
         this.spine.top = NaN;
         this.spine.left = this.spine.right = 24;
-        this.spine.bottom = 12;
+        this.spine.bottom = 68;
         this.spine.height = 44;
         this.spine.addEventListener(Event.CHANGE, this.onSpine);
         this.root.addChild(this.spine);
+        this.game.top = NaN;
+        this.game.left = this.game.right = 24;
+        this.game.bottom = 12;
+        this.game.height = 44;
+        this.game.addEventListener(Event.CHANGE, this.onGame);
+        this.root.addChild(this.game);
         stage.addChild(this.root);
     }
 
@@ -93,6 +101,7 @@ export class UIShowcase implements NativeScene {
         this.disabled.removeEventListener(Event.CHANGE, this.onClick);
         this.toggle.removeEventListener(Event.CHANGE, this.onToggle);
         this.spine.removeEventListener(Event.CHANGE, this.onSpine);
+        this.game.removeEventListener(Event.CHANGE, this.onGame);
         this.root.parent?.removeChild(this.root);
         this.restoreUI();
     }

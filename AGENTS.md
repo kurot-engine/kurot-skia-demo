@@ -42,12 +42,38 @@ Docs: https://docs.expo.dev/eas/index.md
 
 ## Kurot integration
 
+Project-specific development lessons and captured example screens are indexed in
+`docs/README.md`. Read `docs/development-notes.md` for KUI/resource/clock/lifecycle
+contracts and `docs/verification.md` for dated test scopes; current game screenshots
+do not replace historical GPU acceptance or establish device performance.
+
 The Demo consumes npm `@kurot/skia` exactly at 0.1.5, with Core 2.5.3 and UI 3.5.0.
 The dependency, lockfile and installation use the verified registry release;
 generated assets include the original Spine 4.2 binary skeleton, atlas and PNG.
-The SDK Spine dependency is registry 0.2.1. The default scene shows 20 Spineboy
-players with staggered phases and opt-in 60 Hz shared pose caching. It can switch
-to the original live SDK, synchronize phases, pause, and return to the UI scene.
+The SDK Spine dependency is registry 0.2.1. The default scene is Neon Run
+(星轨疾跑), a portrait runner with double jump, crystals, three lives,
+pause/resume and restart. `src/game/runner` separates deterministic fixed-step
+logic, retained Graphics scenery, live Spine, KUI parts and scene ownership.
+Its logical stage is 360×780 with aspect fitting, keeping jump room on tablets;
+the existing laboratories retain their full-view aspect layout.
+All game UI visuals/layout live in `resource/ui/skins/RunnerSkin.kui.xml`,
+compiled by the installed generator. Keep generated output synchronized; never
+edit its factories manually. Buttons explicitly name their XML skin for minification.
+The live SkeletonRenderer uses the game clock, without an extra ENTER_FRAME
+listener. Source jump travel is cancelled at the feet so physics controls height.
+Pause freezes both clocks; DEACTIVATE pauses until the player resumes.
+Best score and attempt seed are session-only React refs, surviving scene changes.
+Dispose listeners/skin and skeleton before atlas assets; also release late loads.
+`pnpm test:game` checks gameplay at 30/60/120 Hz and sustained 90-second waves.
+The menu retains the original 20 Spineboy laboratory with staggered phases and
+opt-in 60 Hz shared pose caching, live SDK mode, synchronization and pause.
+Its UI page also returns to the game. Do not replace historical GPU acceptance
+with gameplay tests or claim simulator submission rates are device FPS.
+The 2026-10-11 game acceptance passes generation, type checking, lint, eight
+logic tests and both production JS exports. Current JS on the existing Skia
+3.3.0 Release simulator host passes XCTest touch navigation/jump/restart;
+paused screenshots remain byte-identical over three seconds. Android has
+production JS export verification only, with no game device acceptance yet.
 Version 0.1.5 publication, registry download/integrity and all 130 compiled files
 were verified against the prepared library build on 2026-10-11. It adds opt-in
 NativePictureCache commands, runtime directory organization and grouped exports.

@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "Node16",
+        "moduleResolution": "Node16",
+        "strict": true,
+        "skipLibCheck": true,
+        "types": ["node"],
+        "outDir": "../../dist/game-tests",
+        "rootDir": "../.."
+    },
+    "include": ["./*.test.ts"]
+}

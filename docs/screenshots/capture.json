@@ -1,0 +1,115 @@
+{
+  "date": "2026-10-11",
+  "device": "iPhone 17 Pro simulator",
+  "os": "iOS 26.5",
+  "build": "Current production JavaScript and bundled assets embedded into the existing RN Skia 3.3.0 Release native host",
+  "versions": {
+    "@kurot/skia": "0.1.5",
+    "@kurot/core": "2.5.3",
+    "@kurot/ui": "3.5.0",
+    "@kurot/spine-4.2": "0.2.1",
+    "react-native-skia": "3.3.0",
+    "expo": "57.0.27",
+    "react-native": "0.86.3"
+  },
+  "source": "Unmodified XCTest screenshot attachments from the passing final interaction run",
+  "test": {
+    "identifier": "RunnerControls/testOpenAndPlay()",
+    "passed": 1,
+    "failed": 0,
+    "fixture": "Temporary XCTest project; not included in the repository test:native entry"
+  },
+  "pausedPngsIdentical": true,
+  "screenshots": [
+    {
+      "file": "ui-showcase.png",
+      "screen": "Kurot UI",
+      "capturedAt": "2026-10-11T18:30:14.665+08:00",
+      "sourceAttachment": "runner-ui-lab_0_A1FC9A81-B4AA-4236-8AC5-CF6B9B55F745.png",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 166288,
+      "sha256": "80a2eabfed7db4d0904efe438453f753c1bf42b6cccb42c312dc197b3982d693"
+    },
+    {
+      "file": "spine-20.png",
+      "screen": "Spine ×20 / shared cached walk / staggered phases",
+      "capturedAt": "2026-10-11T18:30:13.195+08:00",
+      "sourceAttachment": "runner-spine-lab_0_ABEE4B16-695F-42AC-9F0F-CB1DBAB51AB5.png",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 926012,
+      "sha256": "8c7cf22a3e534db68bb23d4a2e41ee2324084f8779c02247c512dfe174b6619e"
+    },
+    {
+      "file": "neon-run-ready.png",
+      "screen": "Neon Run / ready",
+      "capturedAt": "2026-10-11T18:29:43.493+08:00",
+      "sourceAttachment": "runner-ready_0_729E0402-20CA-4C7C-813E-CE2BB437CA36.png",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 319488,
+      "sha256": "949feb63de0c324b7b75e5ec976a21a20614cdeab898fc94575b94c4f125b577"
+    },
+    {
+      "file": "neon-run-gameplay.png",
+      "screen": "Neon Run / double jump",
+      "capturedAt": "2026-10-11T18:29:46.912+08:00",
+      "sourceAttachment": "runner-double-jump_0_46FA7342-89BB-44BB-A4AE-3CACBF7C6ABF.png",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 245015,
+      "sha256": "d1065b33b9d834f6f33194080fdf9f2055404c3c26a820323b9e271cfdf6bde2"
+    },
+    {
+      "file": "neon-run-paused.png",
+      "screen": "Neon Run / paused",
+      "capturedAt": "2026-10-11T18:29:49.368+08:00",
+      "sourceAttachment": "runner-paused_0_FED6021F-F5EC-4F73-ADA1-AFC4116375E4.png",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 231414,
+      "sha256": "cc8af83429954a51dadb4b7448cabb5a49e2a7d4f6ac951dc57d62f672baf2e7"
+    },
+    {
+      "file": "neon-run-paused-later.png",
+      "screen": "Neon Run / paused after approximately 3 seconds",
+      "capturedAt": "2026-10-11T18:29:52.500+08:00",
+      "sourceAttachment": "runner-paused-later_0_D176A5B1-30F0-4594-BE6C-6F0F2CCE5E71.png",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 231414,
+      "sha256": "cc8af83429954a51dadb4b7448cabb5a49e2a7d4f6ac951dc57d62f672baf2e7"
+    },
+    {
+      "file": "neon-run-game-over.png",
+      "screen": "Neon Run / game over / score 338",
+      "capturedAt": "2026-10-11T18:30:07.953+08:00",
+      "sourceAttachment": "runner-game-over_0_36DDCE1A-2C1B-49F8-B6AB-50F4D6204B54.png",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 267229,
+      "sha256": "860db7d9f2a27a0d2be49f624c9e967b8daeb7d23defdd4783bafa739ca92869"
+    },
+    {
+      "file": "neon-run-restarted.png",
+      "screen": "Neon Run / restarted",
+      "capturedAt": "2026-10-11T18:30:09.396+08:00",
+      "sourceAttachment": "runner-restarted_0_0CD5A83E-C422-48BE-863F-01708FC49713.png",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 242161,
+      "sha256": "723bf008cf8447d114620ec7b1207776398b7536040072cc4dfb4bf2f18df056"
+    },
+    {
+      "file": "neon-run-returned.png",
+      "screen": "Neon Run / returned from laboratories / session best 338",
+      "capturedAt": "2026-10-11T18:30:17.123+08:00",
+      "sourceAttachment": "runner-returned_0_262060D5-30C2-4BEE-AC6B-93D28ED07DA1.png",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 320574,
+      "sha256": "bbee5bd79963dd5a4fa61f0684dd699ec7004656939dcfe2b2f47702e127f091"
+    }
+  ]
+}

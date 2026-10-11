@@ -11,6 +11,14 @@ Picture 缓存需显式创建 `NativePictureCache`，失效/释放及测量限�
 `docs/native-runtime.md`。延续 0.1.4 的通知回调行为，更新 `onStats` / `onError` 时保留场景实例；
 `createScene` 或视口变化仍会重新创建场景。
 
+## 开发文档与截图
+
+[docs](docs/README.md) 收录这次原生接入和示例开发的经验：
+
+- [开发经验](docs/development-notes.md)：KUI 皮肤、资源生成、高清九宫格、Spine 时钟、缓存和生命周期。
+- [验证记录](docs/verification.md)：游戏逻辑、生产 JS、iOS 交互与历史原生 GPU 回归的验证范围。
+- [示例截图](docs/screenshots.md)：UI、Spine ×20 和「星轨疾跑」，包含开始、游玩、暂停、结算与返回。
+
 ## 运行
 
 ```sh
@@ -30,15 +38,37 @@ Expo Go 不包含此项目的 Skia 原生模块。现有包含 Skia 3.3.0 的 de
 内嵌 JS 的 Release 应用需要重新构建。当前宿主是 Expo 57 / RN 0.86.3 / React 19.2.3，
 需要 Node.js >=22.13。iOS 使用 Metal；Android 最低 API 26，需要 Vulkan。
 
-## 当前画面
+## 示例游戏：星轨疾跑
 
-启动显示 **20 个 Spineboy**，使用原始 `walk` 动作与骨骼/图集，默认错开 61 ms 相位并开启
+启动进入竖屏跑酷小游戏。Spineboy 自动前进，场景由 Core Graphics 绘制；HUD、按钮和
+开始/暂停/结算面板全部来自 `resource/ui/skins/RunnerSkin.kui.xml`，复用现有 2× KUI 图集。
+游戏使用 360×780 逻辑舞台等比适配，平板或较短屏幕保留空白边，避免跳跃空间挤进 HUD。
+
+- 点击「开始奔跑」，点按画面或底部「跳跃」按钮起跳；空中可以再跳一次，落地恢复。
+- 避开粉色路障，收集绿色晶体。晶体加 25 分，距离也计分，速度逐渐增加。
+- 碰撞损失一条生命，短暂无敌时角色闪烁；三条生命用完后显示结算，可立即重开。
+- 「暂停」冻结游戏和 Spine；应用进入后台也暂停，回来后点击「继续奔跑」。
+- 最佳分数只保留在本次应用运行中，切换实验室后仍保留；没有持久存档。
+- 菜单中的「Spine / UI 实验室」保留原 20 角色展示，再从 UI 页面返回游戏。
+
+游戏用原 SDK 的实时 `SkeletonRenderer` 播放 `idle/run/jump/death`，场景显式推进骨骼时钟，
+不注册额外 ENTER_FRAME 回调。素材的 jump 自带垂直位移，因此跳跃期间抵消其脚底偏移，
+统一使用游戏物理高度。碰撞框采用固定的逻辑身体尺寸，不把武器和动画摆动当作伤害范围。
+物理使用 120 Hz 固定步长，单帧最多追赶 100 ms；障碍/晶体离屏后移除，重开时清空。
+退出场景先移除 UI 事件和骨骼，再释放借用图集；未完成的资源加载也会在结束后释放。
+
+这是一个无音频、无存档的完整玩法示例。新游戏不需要新的 SDK、
+原生模块或额外素材，原始 Spine 许可保持不变。
+
+## Spine 实验室
+
+实验室显示 **20 个 Spineboy**，使用原始 `walk` 动作与骨骼/图集，默认错开 61 ms 相位并开启
 60 Hz 共享缓存。所有文字和按钮都由 Kurot UI/KUI 绘制，画布保持全屏。
 
 - 「缓存 60 Hz / 实时骨骼」切换共享预采样和原 SDK 实时计算。
 - 「错开相位 / 同步相位」切换角色的初始动画相位。
 - 「暂停 / 继续」控制播放。
-- 「原来的 UI」返回原 Label/Button 页面，可点击计数和切换禁用状态；页面底部可以返回 Spine。
+- 「原来的 UI」进入原 Label/Button 页面，可点击计数和切换禁用状态；页面底部可返回 Spine 或游戏。
 
 缓存由 `NativeSpineAnimationCache` 在资源加载后创建，复用已有 SDK 的 `SkeletonAnimation` 和
 `skeletonData`。20 个播放器共享 60 个几何姿态，数字数组约 1 MB；各自保留独立时钟和显示变换。
@@ -54,6 +84,12 @@ Expo Go 不包含此项目的 Skia 原生模块。现有包含 Skia 3.3.0 的 de
 | 文件 | 作用 |
 | --- | --- |
 | `App.tsx` | 加载 Core Resource、切换场景与全屏 KurotView |
+| `src/game/runner/RunnerScene.ts` | 游戏场景、输入、前后台暂停与资源生命周期 |
+| `src/game/runner/RunnerModel.ts` | 固定步长物理、二段跳、生成、碰撞与计分 |
+| `src/game/runner/RunnerHero.ts` | 实时 Spine 动作与物理高度对齐 |
+| `src/game/runner/RunnerWorld.ts` | Graphics 城市、地面与游戏对象 |
+| `src/game/runner/RunnerUI.ts` | XML 皮肤部件与游戏状态/操作绑定 |
+| `resource/ui/skins/RunnerSkin.kui.xml` | 游戏 HUD、控制与菜单皮肤 |
 | `src/game/SpineShowcase.ts` | 20 角色、缓存/实时/相位/暂停控制与资源清理 |
 | `src/resources/spine.ts` | 原 SDK 加载 binary skeleton 和 atlas |
 | `src/game/UIShowcase.ts` | 原始 Label/Button/KUI 皮肤与点击交互 |
@@ -63,6 +99,7 @@ Expo Go 不包含此项目的 Skia 原生模块。现有包含 Skia 3.3.0 的 de
 | `src/generated/kurot/` | 生成的资源、KUI 工厂、主题入口 |
 | `resource/spine/4.2/` | 原始 Spineboy `.skel`、`.atlas` 和 PNG |
 | `tests/native/` | npm 运行时的真实 JSI/GPU 集成测试 |
+| `tests/game/` | 独立于渲染器的游戏物理和状态测试 |
 
 `resource/resource.json` 保留原 sheet、object subkeys、2× 图集和 KUI。
 Spine skeleton 与 atlas 使用 `text` 声明，生成器识别 `.skel` 并无损嵌入二进制，自动收集
@@ -96,6 +133,7 @@ iPhone 17 Pro / iOS 26.5 模拟器的 Release 测试入口显示全部 PASS，�
 pnpm generate:project
 pnpm exec tsc --noEmit
 pnpm lint
+pnpm test:game
 
 # 真实模拟器/设备 JSI 与 GPU 测试；先停止普通 Metro
 pnpm test:native --ios --clear
@@ -111,6 +149,15 @@ TextField 测试更新为验证原生 INPUT 初始化；实际键盘/IME 的完�
 
 测试结束后停止测试 Metro，再运行 `pnpm dev --ios --clear` 返回普通示例。
 `KUROT_NATIVE_TESTS=1` 只切换测试入口，普通入口不加载测试代码。Node 无法替代真实 Skia JSI 测试。
+
+`pnpm test:game` 编译并运行 8 项 Node 测试：暂停/结束冻结、二段跳与落地、碰撞保护、
+晶体计分、30/60/120 Hz 一致性、长帧限制、重开和种子复现，以及 90 秒递增速度的可玩性和对象清理。
+结果输出到已忽略的 `dist/game-tests`。这套测试不代替原生绘制或触摸验收。
+
+2026-10-11 的游戏验收：生成、类型检查、lint、8 项逻辑测试和 iOS/Android 生产 JS 导出通过。
+复用现有 Skia 3.3.0 Release 原生宿主，加载当前生产 JS，在 iPhone 17 Pro / iOS 26.5 模拟器
+使用 XCTest 实际点按检查开始、二段跳、暂停/继续、结算、重开和实验室往返；暂停间隔 3 秒
+的两张截图完全一致，返回游戏保留本次运行最佳分数。Android 尚未进行设备运行验收。
 
 ## 使用与开发库
 

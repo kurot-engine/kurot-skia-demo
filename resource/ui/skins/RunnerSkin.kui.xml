@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Skin xmlns="https://kurot.dev/ui/1" class="skins.RunnerSkin">
+    <Group left="20" right="20" top="56" height="108" touchEnabled="false">
+        <Label text="NEON RUN" size="12" bold="true" textColor="#63EDC9" top="0" left="0" height="20" touchEnabled="false"/>
+        <Label text="星轨疾跑" size="28" bold="true" textColor="#F4F7FF" top="22" left="0" height="38" touchEnabled="false"/>
+        <Button id="pauseButton" skinName="skins.ButtonSkin" label="暂停" right="0" top="18" width="84" height="48"/>
+        <Label id="scoreDisplay" text="0000" size="22" bold="true" textColor="#F4F7FF" left="0" top="70" width="90" height="32" touchEnabled="false"/>
+        <Label id="crystalDisplay" text="晶体 0" size="14" textColor="#63EDC9" left="94" top="70" width="86" height="32" touchEnabled="false"/>
+        <Label id="lifeDisplay" text="生命 ● ● ●" size="14" textColor="#FFAAB5" right="0" top="70" width="130" height="32" textAlign="right" touchEnabled="false"/>
+    </Group>
+    <Label id="hintDisplay" text="点按画面跳跃 · 空中可再跳一次" left="16" right="16" bottom="112" height="28" textAlign="center" size="13" textColor="#91ABC4" touchEnabled="false"/>
+    <Button id="jumpButton" skinName="skins.ButtonSkin" label="跳跃  ↑" left="20" right="20" bottom="48" height="56"/>
+    <Group id="overlay" width="100%" height="100%" touchEnabled="true">
+        <Rect width="100%" height="100%" fillColor="#071022" fillAlpha="0.55"/>
+        <Group horizontalCenter="0" verticalCenter="-30" width="312" height="310">
+            <Image width="100%" height="100%" source="kui.panel" touchEnabled="false"/>
+            <Label id="menuTag" text="SPINE × KUROT UI × SKIA" top="22" left="24" right="24" height="22" size="11" bold="true" textColor="#0874CF" textAlign="center" touchEnabled="false"/>
+            <Label id="menuTitle" text="穿过星光，向前跑" top="50" left="20" right="20" height="40" size="24" bold="true" textFit="shrink" minFontSize="18" textColor="#18273E" textAlign="center" touchEnabled="false"/>
+            <Label id="menuDescription" text="点按跳跃，空中还能再跳一次。&#10;越过路障，收集绿色晶体。&#10;你有三次机会，跑得越远分数越高。" top="96" left="20" right="20" height="66" size="14" multiline="true" lineSpacing="6" textColor="#64748B" textAlign="center" touchEnabled="false"/>
+            <Label id="bestDisplay" text="本次运行最佳 0" top="168" left="20" right="20" height="22" size="13" bold="true" textColor="#0874CF" textAlign="center" touchEnabled="false"/>
+            <Button id="mainButton" skinName="skins.ButtonSkin" label="准备 Spine…" left="22" right="22" bottom="70" height="48" enabled="false"/>
+            <Button id="labButton" skinName="skins.ButtonSkin" label="Spine / UI 实验室" left="22" right="22" bottom="14" height="48"/>
+        </Group>
+    </Group>
+</Skin>
