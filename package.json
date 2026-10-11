@@ -5,6 +5,7 @@
     "dependencies": {
         "@kurot/core": "2.5.3",
         "@kurot/skia": "0.1.2",
+        "@kurot/spine-4.2": "0.2.1",
         "@kurot/ui": "3.5.0",
         "expo": "~57.0.27",
         "expo-build-properties": "~57.0.22",

@@ -8,6 +8,7 @@ import { View } from 'react-native';
 import './src/resources/bundled';
 import { resourceConfigURL, resourceRoot } from './src/generated/kurot/assets';
 import { UIShowcase } from './src/game/UIShowcase';
+import { SpineShowcase } from './src/game/SpineShowcase';
 import { KurotView } from '@kurot/skia';
 import type { NativeScene } from '@kurot/skia';
 
@@ -17,6 +18,7 @@ function reportError(message: string): void {
 
 export function App(): ReactElement {
     const [resources, setResources] = useState<Resource>();
+    const [scene, setScene] = useState<'spine' | 'ui'>('spine');
     useEffect(() => {
         StatusBar.setHidden(true);
         const manager = new Resource();
@@ -44,8 +46,10 @@ export function App(): ReactElement {
         if (!resources) {
             throw new Error('Kurot resources have not loaded.');
         }
-        return new UIShowcase(stage, resources);
-    }, [resources]);
+        return scene === 'spine'
+            ? new SpineShowcase(stage, resources, () => setScene('ui'), reportError)
+            : new UIShowcase(stage, resources, () => setScene('spine'));
+    }, [resources, scene]);
 
     return resources
         ? <KurotView width={360} createScene={createScene} onError={reportError} />

@@ -31,10 +31,11 @@ export class UIShowcase implements NativeScene {
     private readonly primary = button('点击 +1', 0);
     private readonly disabled = button('禁用状态', 76);
     private readonly toggle = button('启用中间的按钮', 152);
+    private readonly spine = button('Spine × 20', 0);
     private readonly restoreUI: () => void;
     private taps = 0;
 
-    public constructor(stage: Stage, resources: Resource) {
+    public constructor(stage: Stage, resources: Resource, private readonly onSpine: () => void) {
         this.restoreUI = installNativeUI(resources);
         this.root.width = stage.stageWidth;
         this.root.height = stage.stageHeight;
@@ -69,6 +70,12 @@ export class UIShowcase implements NativeScene {
         this.root.addChild(description);
         this.root.addChild(controls);
         this.root.addChild(this.counter);
+        this.spine.top = NaN;
+        this.spine.left = this.spine.right = 24;
+        this.spine.bottom = 12;
+        this.spine.height = 44;
+        this.spine.addEventListener(Event.CHANGE, this.onSpine);
+        this.root.addChild(this.spine);
         stage.addChild(this.root);
     }
 
@@ -78,6 +85,7 @@ export class UIShowcase implements NativeScene {
         this.primary.removeEventListener(Event.CHANGE, this.onClick);
         this.disabled.removeEventListener(Event.CHANGE, this.onClick);
         this.toggle.removeEventListener(Event.CHANGE, this.onToggle);
+        this.spine.removeEventListener(Event.CHANGE, this.onSpine);
         this.root.parent?.removeChild(this.root);
         this.restoreUI();
     }

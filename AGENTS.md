@@ -43,6 +43,13 @@ Docs: https://docs.expo.dev/eas/index.md
 ## Kurot integration
 
 The Demo consumes npm `@kurot/skia` exactly at 0.1.2, with Core 2.5.3 and UI 3.5.0.
+The current checkpoint prepares a Spine 4.2 / 20-actor scene and cached-pose tests
+for Skia 0.1.3. That release is not yet verified on npm; the dependency and lock
+remain 0.1.2, so the new cache API imports currently fail type checking. Do not
+treat this checkpoint as runnable or claim native acceptance. After publication,
+install exact npm 0.1.3 with Expo, regenerate assets and run type/lint/native checks.
+The SDK Spine dependency is registry 0.2.1. Keep the preparation status in README
+until registry adoption and validation are actually complete.
 This release uses native drawImageNine and cached atlas crops. Source frames and
 nine-slice boundaries must be integer physical pixels; logical half-pixel grids
 remain valid at 2× density. Keep the GPU and crop-cache native regressions.

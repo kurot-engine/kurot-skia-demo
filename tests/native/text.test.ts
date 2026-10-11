@@ -171,14 +171,11 @@ export function runTextChecks(): void {
         assert(clipped.right < 60 && clipped.bottom < 50, 'external clip stays exact');
         stage.removeChildren();
         assert(render(stage, renderer).right === -1, 'removed text evicts native paragraphs');
-        let rejected = false;
-        try {
-            const input = new TextField();
-            input.type = TextFieldType.INPUT;
-        } catch (error) {
-            rejected = error instanceof Error && error.message.includes('native keyboard');
-        }
-        assert(rejected, 'input fails explicitly before any DOM access');
+        const input = new TextField();
+        input.type = TextFieldType.INPUT;
+        input.text = 'Native input';
+        assert(input.type === TextFieldType.INPUT && input.text === 'Native input',
+            'native input initializes without browser DOM access');
     } finally {
         stage.removeChildren();
         renderer.dispose();

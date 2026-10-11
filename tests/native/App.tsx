@@ -10,6 +10,7 @@ import { runTextChecks } from './text.test';
 import { runUIChecks } from './ui.test';
 import { runGPUNineSliceChecks } from './gpu-nine-slice.test';
 import { runNineSliceCacheChecks } from './nine-slice-cache.test';
+import { runSpineCacheChecks } from './spine-cache.test';
 
 /**
  * Separate device test entry: runs against Skia JSI, not mocked Node bindings.
@@ -29,6 +30,7 @@ export function App(): ReactElement {
                 await runUIChecks();
                 await runGPUNineSliceChecks();
                 runNineSliceCacheChecks();
+                await runSpineCacheChecks();
             } finally {
                 renderer.dispose();
             }
@@ -37,7 +39,7 @@ export function App(): ReactElement {
             console.info('Kurot Skia: all native tests passed.');
             if (mounted) {
                 setFailed(false);
-                setResult('PASS\nNative adapter\nNative resources\nNative TextField\nNative UI / original KUI skin\nGPU nine-slice / fractional transforms\nNative nine-slice cache lifecycle');
+                setResult('PASS\nNative adapter\nNative resources\nNative TextField\nNative UI / original KUI skin\nGPU nine-slice / fractional transforms\nNative nine-slice cache lifecycle\nRegistry Spine cache / 20 phases');
             }
         }, (error: unknown) => {
             const message = error instanceof Error ? error.message : String(error);

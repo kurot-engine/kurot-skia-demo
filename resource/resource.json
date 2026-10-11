@@ -7,6 +7,16 @@
   ],
   "resources": [
     {
+      "name": "spineboy_atlas",
+      "type": "text",
+      "url": "spine/4.2/spineboy.atlas"
+    },
+    {
+      "name": "spineboy_skeleton",
+      "type": "text",
+      "url": "spine/4.2/spineboy-pro.skel"
+    },
+    {
       "name": "mascot_png",
       "type": "image",
       "url": "assets/kurot-logo.png"
